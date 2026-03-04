@@ -32,7 +32,7 @@ type StaffUsecase interface {
 type CreateStaffInput struct {
 	Username     string `gorm:"unique" json:"username" binding:"required"`
 	Password     string `json:"password" binding:"required"`
-	HospitalName string `json:"hospital_id" binding:"required"`
+	HospitalName string `json:"hospital_name" binding:"required"`
 }
 
 func (s *Staff) BeforeCreate(tx *gorm.DB) error {
