@@ -26,7 +26,7 @@ func (p * postgresStaffRepository) Create(ctx context.Context, staff *domain.Sta
 
 func (p * postgresStaffRepository) FindByUsername(ctx context.Context, username string) (*domain.Staff, error) {
 	var staff domain.Staff
-	if err := config.DB.Where("username = ?", username).First(&staff).Error; err != nil {
+	if err := config.DB.Preload("Hospital").Where("username = ?", username).First(&staff).Error; err != nil {
 		return nil, err
 	}
 	return &staff, nil
