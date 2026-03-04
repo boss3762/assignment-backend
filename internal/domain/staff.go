@@ -10,9 +10,9 @@ import (
 
 type Staff struct {
 	ID         uuid.UUID `gorm:"primaryKey" json:"id"`
-	Username   string    `gorm:"unique" json:"username" binding:"required"`
+	Username   string    `gorm:"uniqueIndex:idx_staff_username_hospital" json:"username" binding:"required"`
 	Password   string    `json:"password" binding:"required"`
-	HospitalID uuid.UUID `json:"hospital_name" binding:"required"`
+	HospitalID uuid.UUID `gorm:"uniqueIndex:idx_staff_username_hospital" json:"hospital_name" binding:"required"`
 	Hospital   Hospital  `gorm:"foreignKey:HospitalID" json:"-"`
 }
 
