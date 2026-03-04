@@ -43,11 +43,18 @@ func (p *patientUsecase) CreateNewPatient(ctx context.Context, staffname string,
 	return p.patientRepo.Create(convertToPatient(patient, staff.HospitalID))
 }
 
-func (p *patientUsecase) FindPatient(ctx context.Context, staffname string, patient *domain.PatientInput) (*domain.Patient, error) {
-	staff, err := p.staffRepo.FindByUsername(ctx, staffname)
+func (p *patientUsecase) FindPatient(ctx context.Context, staffusername string, patient *domain.PatientSearchInput) ([]domain.Patient, error) {
+	staff, err := p.staffRepo.FindByUsername(ctx, staffusername)
 	if err != nil {
 		return nil, err
 	}
 	return p.patientRepo.FindPatientRepo(ctx,staff.HospitalID, patient)
 }
 
+func (p *patientUsecase) FindPatientByID(ctx context.Context, id string) (*domain.Patient, error) {
+	patient, err := p.patientRepo.FindPatientByIDRepo(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+	return patient, nil
+}

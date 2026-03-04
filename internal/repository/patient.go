@@ -1,11 +1,12 @@
 package repository
 
 import (
-	"gorm.io/gorm"
 	"agnos/internal/domain"
 	"context"
+	// "fmt"
+
 	"github.com/google/uuid"
-	"fmt"
+	"gorm.io/gorm"
 )
 
 type postgresPatientRepository struct {
@@ -17,19 +18,61 @@ func NewPostgresPatientRepository(db *gorm.DB) domain.PatientRepository {
 }
 
 func (p *postgresPatientRepository) Create(patient *domain.Patient) error {
-	fmt.Printf("%+v\n", patient)
-	// fmt.Println(p.db.Create(patient).Error)
 	return p.db.Create(patient).Error
 }
 
-func (p *postgresPatientRepository) FindPatientRepo(ctx context.Context, hospitalID uuid.UUID, patient *domain.PatientInput) (*domain.Patient, error) {
-	fmt.Println(patient)
-	query := p.db.Where("hospital_id = ?", hospitalID).Where(patient)
-	if err := query.Error; err != nil {
+func (p *postgresPatientRepository) FindPatientRepo(ctx context.Context, hospitalID uuid.UUID, patient *domain.PatientSearchInput) ([]domain.Patient, error) {
+	query := p.db.Where("hospital_id = ?", hospitalID)
+	if patient.FirstNameTH != nil {
+		query = query.Where("first_name_th ilike ?", "%"+*patient.FirstNameTH+"%")
+	}
+	if patient.MiddleNameTH != nil {
+		query = query.Where("middle_name_th ilike ?", "%"+*patient.MiddleNameTH+"%")
+	}
+	if patient.LastNameTH != nil {
+		query = query.Where("last_name_th ilike ?", "%"+*patient.LastNameTH+"%")
+	}
+	if patient.FirstNameEN != nil {
+		query = query.Where("first_name_en ilike ?", "%"+*patient.FirstNameEN+"%")
+	}
+	if patient.MiddleNameEN != nil {
+		query = query.Where("middle_name_en ilike ?", "%"+*patient.MiddleNameEN+"%")
+	}
+	if patient.LastNameEN != nil {
+		query = query.Where("last_name_en ilike ?", "%"+*patient.LastNameEN+"%")
+	}
+	if patient.DateOfBirth != nil {
+		query = query.Where("date_of_birth = ?", *patient.DateOfBirth)
+	}
+	if patient.PatientHN != nil {
+		query = query.Where("patient_hn = ?", *patient.PatientHN)
+	}
+	if patient.NationalID != nil {
+		query = query.Where("national_id = ?", *patient.NationalID)
+	}
+	if patient.PassportID != nil {
+		query = query.Where("passport_id = ?", *patient.PassportID)
+	}
+	if patient.PhoneNumber != nil {
+		query = query.Where("phone_number = ?", *patient.PhoneNumber)
+	}
+	if patient.Email != nil {
+		query = query.Where("email = ?", *patient.Email)
+	}
+	if patient.Gender != nil {
+		query = query.Where("gender = ?", *patient.Gender)
+	}
+	var result []domain.Patient
+	if err := query.Find(&result).Error; err != nil {
 		return nil, err
 	}
-	fmt.Println(query)
-	return &domain.Patient{}, nil
+	return result, nil
 }
 
-
+func (p *postgresPatientRepository) FindPatientByIDRepo(ctx context.Context, id string) (*domain.Patient, error) {
+	var result domain.Patient
+	if err := p.db.Where("national_id = ?", id).Or("passport_id = ?", id).First(&result).Error; err != nil {
+		return nil, err
+	}
+	return &result, nil
+}
