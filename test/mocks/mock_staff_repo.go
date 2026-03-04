@@ -23,3 +23,11 @@ func (m *MockStaffRepository) FindByUsername(ctx context.Context, username strin
 	}
 	return args.Get(0).(*domain.Staff), args.Error(1)
 }
+
+func (m *MockStaffRepository) FindByUsernameHospitalname(ctx context.Context, input *domain.CreateStaffInput) (*domain.Staff, error) {
+	args := m.Called(ctx, input)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
+	return args.Get(0).(*domain.Staff), args.Error(1)
+}
