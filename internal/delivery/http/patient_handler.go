@@ -4,7 +4,7 @@ import (
 	"agnos/internal/domain"
 	"net/http"
 
-	"fmt"
+	// "fmt"
 	"github.com/gin-gonic/gin"
 )
 
@@ -48,7 +48,6 @@ func (p *PatientHandler) FindPatient(c *gin.Context) {
 
 func (p *PatientHandler) FindPatientByID(c *gin.Context) {
 	id := c.Param("id")
-	fmt.Println(id)
 	if id == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "ID is required"})
 		return
