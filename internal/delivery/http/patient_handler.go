@@ -4,7 +4,7 @@ import (
 	"agnos/internal/domain"
 	"net/http"
 
-	// "fmt"
+	"fmt"
 	"github.com/gin-gonic/gin"
 )
 
@@ -33,7 +33,7 @@ func (p *PatientHandler) CreateNewPatient(c *gin.Context) {
 
 func (p *PatientHandler) FindPatient(c *gin.Context) {
 	username := c.MustGet("username").(string)
-	input := domain.PatientInput{}
+	input := domain.PatientSearchInput{}
 	if err := c.ShouldBindJSON(&input); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -43,5 +43,20 @@ func (p *PatientHandler) FindPatient(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"message": "Patient found successfully", "patient": patient})
+	c.JSON(http.StatusOK, gin.H{"patient": patient})
+}
+
+func (p *PatientHandler) FindPatientByID(c *gin.Context) {
+	id := c.Param("id")
+	fmt.Println(id)
+	if id == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "ID is required"})
+		return
+	}
+	patient, err := p.patientUsecase.FindPatientByID(c.Request.Context(), id)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"patient": patient})
 }
