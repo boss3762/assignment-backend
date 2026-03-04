@@ -1,0 +1,288 @@
+basePath: /
+definitions:
+  domain.CreateStaffInput:
+    properties:
+      hospital_id:
+        type: string
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - hospital_id
+    - password
+    - username
+    type: object
+  domain.Gender:
+    enum:
+    - m
+    - f
+    - o
+    type: string
+    x-enum-varnames:
+    - GenderMale
+    - GenderFemale
+    - GenderOther
+  domain.PatientInput:
+    properties:
+      date_of_birth:
+        type: string
+      email:
+        type: string
+      first_name_en:
+        type: string
+      first_name_th:
+        type: string
+      gender:
+        $ref: '#/definitions/domain.Gender'
+      last_name_en:
+        type: string
+      last_name_th:
+        type: string
+      middle_name_en:
+        type: string
+      middle_name_th:
+        type: string
+      national_id:
+        type: string
+      passport_id:
+        type: string
+      patient_hn:
+        type: string
+      phone_number:
+        type: string
+    required:
+    - first_name_en
+    - first_name_th
+    - last_name_en
+    - last_name_th
+    - national_id
+    - patient_hn
+    type: object
+  domain.PatientSearchInput:
+    properties:
+      date_of_birth:
+        type: string
+      email:
+        type: string
+      first_name_en:
+        type: string
+      first_name_th:
+        type: string
+      gender:
+        $ref: '#/definitions/domain.Gender'
+      last_name_en:
+        type: string
+      last_name_th:
+        type: string
+      middle_name_en:
+        type: string
+      middle_name_th:
+        type: string
+      national_id:
+        type: string
+      passport_id:
+        type: string
+      patient_hn:
+        type: string
+      phone_number:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: REST API สำหรับระบบจัดการข้อมูลผู้ป่วย
+  title: Agnos Patient API
+  version: "1.0"
+paths:
+  /patient/create:
+    post:
+      consumes:
+      - application/json
+      description: สร้างผู้ป่วยใหม่ภายใต้โรงพยาบาลของ staff ที่ login อยู่
+      parameters:
+      - description: ข้อมูลผู้ป่วย
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/domain.PatientInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Patient created successfully
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: ข้อมูลไม่ถูกต้อง
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: เกิดข้อผิดพลาดภายใน
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: สร้างข้อมูลผู้ป่วยใหม่
+      tags:
+      - Patient
+  /patient/search:
+    post:
+      consumes:
+      - application/json
+      description: ค้นหาผู้ป่วยภายใต้โรงพยาบาลของ staff ผ่าน filter ต่างๆ (ทุก field
+        เป็น optional)
+      parameters:
+      - description: เงื่อนไขการค้นหา (ทุก field optional)
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/domain.PatientSearchInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: รายการผู้ป่วยที่พบ
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: ข้อมูลไม่ถูกต้อง
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: เกิดข้อผิดพลาดภายใน
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: ค้นหาผู้ป่วย
+      tags:
+      - Patient
+  /patient/search/{id}:
+    get:
+      consumes:
+      - application/json
+      description: ค้นหาผู้ป่วยด้วย National ID หรือ Passport ID
+      parameters:
+      - description: National ID หรือ Passport ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ข้อมูลผู้ป่วย
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: ไม่ได้ระบุ ID
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: ไม่พบข้อมูล
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: ค้นหาผู้ป่วยด้วย ID
+      tags:
+      - Patient
+  /staff/create:
+    post:
+      consumes:
+      - application/json
+      description: ลงทะเบียน staff พร้อมระบุโรงพยาบาล (ถ้าโรงพยาบาลยังไม่มีจะสร้างให้อัตโนมัติ)
+      parameters:
+      - description: ข้อมูล Staff
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/domain.CreateStaffInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: สร้าง staff สำเร็จ
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: ข้อมูลไม่ถูกต้อง
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: เกิดข้อผิดพลาดภายใน
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: สร้าง staff ใหม่
+      tags:
+      - Staff
+  /staff/login:
+    post:
+      consumes:
+      - application/json
+      description: ตรวจสอบ username/password แล้วคืน JWT access token
+      parameters:
+      - description: ข้อมูล Login
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/domain.CreateStaffInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: access_token
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: ข้อมูลไม่ถูกต้อง
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: username หรือ password ไม่ถูกต้อง
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: เข้าสู่ระบบ
+      tags:
+      - Staff
+securityDefinitions:
+  BearerAuth:
+    description: 'ใส่ token ในรูปแบบ: Bearer <token>'
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

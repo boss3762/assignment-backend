@@ -2,6 +2,7 @@ package main
 
 import (
 	"agnos/config"
+	_ "agnos/docs"
 	"agnos/internal/auth"
 	"agnos/internal/delivery/http"
 	"agnos/internal/domain"
@@ -10,8 +11,19 @@ import (
 	"agnos/internal/usecase"
 
 	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
+// @title           Agnos Patient API
+// @version         1.0
+// @description     REST API สำหรับระบบจัดการข้อมูลผู้ป่วย
+// @host            localhost:8080
+// @BasePath        /
+// @securityDefinitions.apikey BearerAuth
+// @in header
+// @name Authorization
+// @description ใส่ token ในรูปแบบ: Bearer <token>
 func main() {
 	config.ConnectDB()
 	config.DB.AutoMigrate(&domain.Staff{}, &domain.Hospital{}, &domain.Patient{})
@@ -45,5 +57,6 @@ func main() {
 		})
 	}
 
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	router.Run() // listens on 0.0.0.0:8080 by default
 }
