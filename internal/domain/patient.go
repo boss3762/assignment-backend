@@ -18,7 +18,7 @@ type Patient struct {
 	FirstNameEN  string `json:"first_name_en" binding:"required"`
 	MiddleNameEN string `json:"middle_name_en"`
 	LastNameEN   string `json:"last_name_en" binding:"required"`
-	DateOfBirth  string `json:"date_of_birth"`
+	DateOfBirth  string `json:"date_of_birth" binding:"omitempty,datetime=2006-01-02"`
 	PatientHN    string `gorm:"unique" json:"patient_hn" binding:"required"`
 	NationalID   string `gorm:"unique" json:"national_id" binding:"required"`
 	PassportID   string `gorm:"unique;default:null" json:"passport_id"`
@@ -34,7 +34,7 @@ type PatientInput struct {
 	FirstNameEN  string `json:"first_name_en" binding:"required"`
 	MiddleNameEN string `json:"middle_name_en"`
 	LastNameEN   string `json:"last_name_en" binding:"required"`
-	DateOfBirth  string `json:"date_of_birth"`
+	DateOfBirth  string `json:"date_of_birth" binding:"omitempty,datetime=2006-01-02"`
 	PatientHN    string `gorm:"unique" json:"patient_hn" binding:"required"`
 	NationalID   string `gorm:"unique" json:"national_id" binding:"required"`
 	PassportID   string `gorm:"unique" json:"passport_id"`
