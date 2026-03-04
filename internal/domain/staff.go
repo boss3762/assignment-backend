@@ -12,7 +12,7 @@ type Staff struct {
 	ID         uuid.UUID `gorm:"primaryKey" json:"id"`
 	Username   string    `gorm:"unique" json:"username" binding:"required"`
 	Password   string    `json:"password" binding:"required"`
-	HospitalID uuid.UUID `json:"hospital_id" binding:"required"`
+	HospitalID uuid.UUID `json:"hospital_name" binding:"required"`
 	Hospital   Hospital  `gorm:"foreignKey:HospitalID" json:"-"`
 }
 
