@@ -7,6 +7,15 @@ import (
 	"gorm.io/gorm"
 )
 
+type Gender string
+
+const (
+	GenderMale   Gender = "m"
+	GenderFemale Gender = "f"
+	GenderOther  Gender = "o"
+)
+
+
 type Patient struct {
 	ID         uuid.UUID `gorm:"primaryKey" json:"id"`
 	HospitalID uuid.UUID `json:"hospital_id" binding:"required"`
@@ -24,7 +33,7 @@ type Patient struct {
 	PassportID   string `gorm:"unique;default:null" json:"passport_id"`
 	PhoneNumber  string `gorm:"unique" json:"phone_number"`
 	Email        string `gorm:"unique" json:"email"`
-	Gender       string `json:"gender"`
+	Gender       Gender `json:"gender"`
 }
 
 type PatientInput struct {
@@ -40,7 +49,7 @@ type PatientInput struct {
 	PassportID   string `gorm:"unique" json:"passport_id"`
 	PhoneNumber  string `gorm:"unique" json:"phone_number"`
 	Email        string `gorm:"unique" json:"email"`
-	Gender       string `json:"gender"`
+	Gender       Gender `json:"gender"`
 }
 
 type PatientSearchInput struct {
@@ -56,7 +65,7 @@ type PatientSearchInput struct {
 	PassportID   *string `json:"passport_id"`
 	PhoneNumber  *string `json:"phone_number"`
 	Email        *string `json:"email"`
-	Gender       *string `json:"gender"`
+	Gender       *Gender `json:"gender"`
 }
 
 type PatientRepository interface {
