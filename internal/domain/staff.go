@@ -22,6 +22,7 @@ type StaffRepository interface {
 	// Update(c *gin.Context, p *Staff) error
 	// Delete(c *gin.Context, id uuid.UUID) error
 	FindByUsername(ctx context.Context, username string) (*Staff, error)
+	FindByUsernameHospitalname(ctx context.Context, input *CreateStaffInput) (*Staff, error)
 }
 
 type StaffUsecase interface {

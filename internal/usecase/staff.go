@@ -51,7 +51,7 @@ func (s *staffUsecase) CreateNewStaff(ctx context.Context, input *domain.CreateS
 }
 
 func (s *staffUsecase) LoginStaff(ctx context.Context, input *domain.CreateStaffInput) string {
-	staff, err := s.repo.FindByUsername(ctx, input.Username)
+	staff, err := s.repo.FindByUsernameHospitalname(ctx,input)
 	if err != nil {
 		return ""
 	}
